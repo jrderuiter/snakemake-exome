@@ -1,0 +1,26 @@
+cutadapt:
+  extra: ''
+
+bwa:
+  index: '/path/to/index'
+  extra: ''
+  threads: 5
+
+picard_merge_bam:
+  extra: ''
+
+picard_mark_duplicates:
+  extra: ''
+
+picard_sort_sam:
+  options: ''
+  threads: 5
+
+freebayes:
+  extra: ''
+
+multiqc:
+  extra: ''
+
+fastqc:
+  extra: ''
