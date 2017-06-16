@@ -4,6 +4,7 @@ cutadapt:
 bwa:
   index: '/path/to/index'
   extra: ''
+  sort_extra: ''
   threads: 5
 
 picard_merge_bam:
@@ -12,11 +13,8 @@ picard_merge_bam:
 picard_mark_duplicates:
   extra: ''
 
-picard_sort_sam:
-  options: ''
-  threads: 5
-
 freebayes:
+  reference: '/path/to/genome.fasta'
   extra: ''
 
 multiqc:

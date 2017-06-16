@@ -2,7 +2,9 @@ rule multiqc:
     input:
         directory='.',
         fastqc=expand('qc/fastqc/{sample_lane}.{pair}_fastqc.html',
-                      sample_lane=get_samples_with_lane(), pair=['R1', 'R2'])
+                      sample_lane=get_samples_with_lane(), pair=['R1', 'R2']),
+        samtools_stats=expand('qc/samtools_stats/{sample}.txt',
+                              sample=get_samples())
     output:
         'qc/multiqc_report.html'
     params:
@@ -27,7 +29,7 @@ rule fastqc:
 
 rule samtools_stats:
     input:
-        'bam/deduped/{sample}.txt'
+        'bam/deduped/{sample}.bam'
     output:
         'qc/samtools_stats/{sample}.txt'
     shell:
