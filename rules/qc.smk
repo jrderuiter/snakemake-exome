@@ -1,3 +1,6 @@
+from os import path
+
+
 rule multiqc:
     input:
         directory='.',
@@ -24,7 +27,7 @@ rule fastqc:
     params:
         config['fastqc']['extra']
     wrapper:
-        'file:///home/j.d.ruiter/workflows/snakemake-wrappers/bio/fastqc'
+        'file://' + path.join(workflow.basedir, 'wrappers/fastqc')
 
 
 rule samtools_stats:

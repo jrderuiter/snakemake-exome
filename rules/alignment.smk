@@ -1,3 +1,6 @@
+from os import path
+
+
 rule bwa:
     input:
         ['fastq/trimmed/{sample}.{lane}.R1.fastq.gz',
@@ -15,7 +18,7 @@ rule bwa:
     log:
         'logs/bwa/{sample}.{lane}.log'
     wrapper:
-        'file:///home/j.d.ruiter/workflows/snakemake-wrappers/bio/bwa/mem'
+        'file://' + path.join(workflow.basedir, 'wrappers/bwa/mem')
 
 
 def merge_inputs(wildcards):
@@ -38,7 +41,7 @@ rule picard_merge_bam:
     log:
         'logs/picard_merge_bam/{sample}.log'
     wrapper:
-        'file:///home/j.d.ruiter/workflows/snakemake-wrappers/bio/picard/mergesamfiles'
+        'file://' + path.join(workflow.basedir, 'wrappers/picard/mergesamfiles')
 
 
 rule picard_mark_duplicates:

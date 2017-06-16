@@ -11,14 +11,16 @@ The workflow essentially performs the following steps:
 
 * The input reads are trimmed to remove adapters and/or poor quality base calls
   using cutadapt.
-* The trimmed reads are aligned to the reference genome using bwa mem. The
-  alignments are sorted using picard SortSam and indexed using samtools.
-* Bam files from multiple lanes are merged using picard tools.
+* The trimmed reads are aligned to the reference genome using bwa mem.
+* The alignments are sorted using picard SortSam and indexed using samtools.
+* Bam files from multiple lanes are merged using picard MergeSamFiles.
 * Picard MarkDuplicates is used to remove optical/PCR duplicates.
 * Variant calls are generated using freebayes.
 
 QC statistics are generated using fastqc and samtools stats, and are summarized
 using multiqc.
+
+**Note that this workflow is still under active development.**
 
 ## Usage
 

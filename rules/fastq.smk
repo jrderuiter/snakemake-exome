@@ -1,4 +1,7 @@
+from os import path
+
 from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
+
 
 HTTP = HTTPRemoteProvider()
 
@@ -29,4 +32,4 @@ rule cutadapt:
     log:
         'logs/cutadapt/{sample}.{lane}.log'
     wrapper:
-        'file:///home/j.d.ruiter/workflows/snakemake-wrappers/bio/cutadapt/pe'
+        'file://' + path.join(workflow.basedir, 'wrappers/cutadapt/pe')
