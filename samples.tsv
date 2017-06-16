@@ -1,2 +1,2 @@
 sample	lane	fastq1	fastq2
-1957_6_T250	L001	http://forge/userdata/Q56bNM1fqmkbIERG60OqHGAAfv0I4us1scCpls7V/run186/fastq/1957_6_T250_ACATTGG_L001_R1_001.fastq.gz	http://forge/userdata/Q56bNM1fqmkbIERG60OqHGAAfv0I4us1scCpls7V/run186/fastq/1957_6_T250_ACATTGG_L001_R2_001.fastq.gz
+S1	L001	fastq/S1.L001.R1.fastq.gz	fastq/S1.L001.R2.fastq.gz
