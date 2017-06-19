@@ -36,14 +36,20 @@ In any case, if you use this workflow in a paper, don't forget to give credits
 to the authors by citing the URL of this repository and, if available, its
 DOI (see above).
 
-### Step 2: Configure workflow
+### Step 2: Install dependencies
+
+To be able to run the workflow, you need to have snakemake and pandas
+installed. The various tools (e.g. bwa, samtools) also need to be installed
+or can be managed via snakemake using conda (with the --use-conda flag).
+
+### Step 3: Configure workflow
 
 Configure the workflow according to your needs by editing the files
 `config.yaml` and `samples.tsv`. Note that fastq file paths can be specified
 as local file paths or remote http-based urls (other options can be added
 on request).
 
-### Step 3: Execute workflow
+### Step 4: Execute workflow
 
 Test your configuration by performing a dry-run using
 

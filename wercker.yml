@@ -6,8 +6,8 @@ box:
 build:
   steps:
     - script:
-        name: pytest
-        code: conda install pytest
+        name: pytest and pandas
+        code: conda install pytest pandas
 
     - script:
         name: snakemake version
