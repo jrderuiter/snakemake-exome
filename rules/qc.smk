@@ -16,6 +16,8 @@ rule multiqc:
         'qc/multiqc_report.html'
     params:
         config['multiqc']['extra']
+    log:
+        'logs/multiqc.log'
     wrapper:
         'file://' + path.join(workflow.basedir, 'wrappers/multiqc')
 
@@ -37,7 +39,7 @@ rule samtools_stats:
         'bam/deduped/{sample}.bam'
     output:
         'qc/samtools_stats/{sample}.txt'
-    shell:
+    wrapper:
         'file://' + path.join(workflow.basedir, 'wrappers/samtools/stats')
 
 
@@ -56,4 +58,4 @@ rule picard_collect_hs_metrics:
     log:
         'logs/picard_collect_hs_metrics/{sample}.log'
     wrapper:
-        'file://' + path.join(workflow.basedir, 'wrappers/fastqc')
+        'file://' + path.join(workflow.basedir, 'wrappers/picard/collecthsmetrics')
