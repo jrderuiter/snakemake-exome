@@ -41,3 +41,6 @@ picard_collect_hs_metrics:
     bait_intervals: '/path/to/capture.intervals'
     target_intervals: '/path/to/capture.intervals'
     extra: '-Xmx4g'
+
+multiqc:
+  extra: ''
