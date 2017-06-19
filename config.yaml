@@ -1,24 +1,36 @@
 cutadapt:
-  extra: ''
+  extra: >-
+    -a AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC
+    -A AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCATT
+    -q 20
+    --minimum-length 60
 
 bwa:
-  index: '/path/to/index'
-  extra: ''
-  sort_extra: ''
+  index: '/path/to/ondex'
+  extra: "-R \"@RG\\tID:{sample}.{lane}\\tSM:{sample}\\t\
+          PU:{sample}.{lane}\\tPL:ILLUMINA\\tCN:CENTRE\""
+  sort_extra: '-XX:ParallelGCThreads=5'
   threads: 5
 
 picard_merge_bam:
-  extra: ''
+  extra: '-XX:ParallelGCThreads=5'
+
+picard_sort_bam:
+  extra: >-
+    -XX:ParallelGCThreads=5
+    VALIDATION_STRINGENCY=LENIENT
 
 picard_mark_duplicates:
-  extra: ''
+  extra: >-
+    -XX:ParallelGCThreads=5
+    VALIDATION_STRINGENCY=LENIENT
 
 freebayes:
   reference: '/path/to/genome.fasta'
-  extra: ''
-
-multiqc:
-  extra: ''
+  extra: >-
+    --min-alternate-fraction 0.1
+    --min-alternate-count 3
+    --min-coverage 10
 
 fastqc:
   extra: ''

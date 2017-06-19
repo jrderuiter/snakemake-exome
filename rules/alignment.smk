@@ -49,7 +49,7 @@ rule picard_mark_duplicates:
         'bam/merged/{sample}.bam'
     output:
         bam='bam/deduped/{sample}.bam',
-        metrics='bam/deduped/{sample}.metrics'
+        metrics='qc/picard_mark_duplicates/{sample}.metrics'
     params:
         config['picard_mark_duplicates']['extra']
     log:

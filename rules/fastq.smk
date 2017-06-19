@@ -6,23 +6,39 @@ from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
 HTTP = HTTPRemoteProvider()
 
 
-def cutadapt_inputs(wildcards):
+def fastq_input(wildcards):
     # Lookup input paths.
     key = (wildcards.sample, wildcards.lane)
     row = samples.set_index(['sample', 'lane']).loc[key]
 
-    inputs = list(row[['fastq1', 'fastq2']])
+    if wildcards.pair == 'R1':
+        input_ = row['fastq1']
+    elif wildcards.pair == 'R2':
+        input_ = row['fastq2']
+    else:
+        raise ValueError('Unexpected value for pair ({})'
+                         .format(wildcards.pair))
 
     # Wrap as URL if needed.
-    if inputs[0].startswith('http'):
-        inputs = [HTTP.remote(input_, keep_local=True) for input_ in inputs]
+    if input_.startswith('http'):
+        input_ = HTTP.remote(input_)
 
-    return inputs
+    return input_
+
+
+rule copy_fastq:
+    input:
+        fastq_input
+    output:
+        temp('fastq/input/{sample}.{lane}.{pair}.fastq.gz')
+    shell:
+        'cp {input} {output}'
 
 
 rule cutadapt:
     input:
-        cutadapt_inputs
+        ['fastq/input/{sample}.{lane}.R1.fastq.gz',
+         'fastq/input/{sample}.{lane}.R2.fastq.gz']
     output:
         fastq1=temp('fastq/trimmed/{sample}.{lane}.R1.fastq.gz'),
         fastq2=temp('fastq/trimmed/{sample}.{lane}.R2.fastq.gz'),
