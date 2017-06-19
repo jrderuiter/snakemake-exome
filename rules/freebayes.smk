@@ -6,9 +6,10 @@ rule freebayes:
         'vcf/calls.vcf'
     params:
         reference=config['freebayes']['reference'],
+        targets=config['freebayes']['targets'],
         extra=config['freebayes']['extra']
     log:
         'logs/freebayes.log'
     shell:
-        'freebayes {params.extra} -f {params.reference} {input.samples}'
-        ' > {output[0]} 2> {log}'
+        'freebayes {params.extra} --fasta-reference {params.reference}'
+        ' --targets {params.targets} {input.samples} > {output[0]} 2> {log}'

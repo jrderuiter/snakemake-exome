@@ -15,11 +15,9 @@ rule multiqc:
     output:
         'qc/multiqc_report.html'
     params:
-        output_dir='qc',
-        extra=config['multiqc']['extra']
-    shell:
-        'multiqc {params.extra} --force -o'
-        ' {params.output_dir} {input.directory}'
+        config['multiqc']['extra']
+    wrapper:
+        'file://' + path.join(workflow.basedir, 'wrappers/multiqc')
 
 
 rule fastqc:
@@ -40,7 +38,7 @@ rule samtools_stats:
     output:
         'qc/samtools_stats/{sample}.txt'
     shell:
-        'samtools stats {input} > {output}'
+        'file://' + path.join(workflow.basedir, 'wrappers/samtools/stats')
 
 
 rule picard_collect_hs_metrics:

@@ -6,7 +6,7 @@ cutadapt:
     --minimum-length 60
 
 bwa:
-  index: '/path/to/ondex'
+  index: '/path/to/index'
   extra: "-R \"@RG\\tID:{sample}.{lane}\\tSM:{sample}\\t\
           PU:{sample}.{lane}\\tPL:ILLUMINA\\tCN:CENTRE\""
   sort_extra: '-XX:ParallelGCThreads=5'
@@ -27,6 +27,7 @@ picard_mark_duplicates:
 
 freebayes:
   reference: '/path/to/genome.fasta'
+  targets: '/path/to/capture.bed'
   extra: >-
     --min-alternate-fraction 0.1
     --min-alternate-count 3
@@ -34,3 +35,9 @@ freebayes:
 
 fastqc:
   extra: ''
+
+picard_collect_hs_metrics:
+    reference: '/path/to/reference'
+    bait_intervals: '/path/to/capture.intervals'
+    target_intervals: '/path/to/capture.intervals'
+    extra: '-Xmx4g'

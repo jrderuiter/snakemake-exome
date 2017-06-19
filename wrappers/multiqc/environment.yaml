@@ -4,4 +4,4 @@ channels:
   - default
   - conda-forge
 dependencies:
-  - ngs-disambiguate ==2016.11.10
+  - multiqc ==1.0
