@@ -11,7 +11,7 @@ rule bwa:
         index=config['bwa']['index'],
         extra=config['bwa']['extra'],
         sort='picard',
-        sort_order='queryname',
+        sort_order='coordinate',
         sort_extra=config['bwa']['sort_extra']
     threads:
         config['bwa']['threads']
