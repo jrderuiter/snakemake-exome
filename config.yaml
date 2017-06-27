@@ -1,3 +1,13 @@
+input:
+  # Optional: input directory to use for fastq files (for local input files).
+  dir: 'input'
+
+  # Optional: configuration to use for remote (FTP) input files.
+  # ftp:
+  #   username: 'user'
+  #   password: 'pass'
+
+
 cutadapt:
   # Example trims Illumina Truseq PE adapters.
   extra: >-
@@ -12,16 +22,11 @@ bwa:
   # Replace 'CENTRE' with the name of your company/institute.
   extra: "-r \"@RG\\tID:{sample}.{lane}\\tSM:{sample}\\tLB:{sample}\\t\
           PU:{sample}.{lane}\\tPL:ILLUMINA\\tCN:CENTRE\""
-  sort_extra: '-XX:ParallelGCThreads=5'
+  sort_extra: ''
   threads: 5
 
 picard_merge_bam:
   extra: '-XX:ParallelGCThreads=5'
-
-picard_sort_bam:
-  extra: >-
-    -XX:ParallelGCThreads=5
-    VALIDATION_STRINGENCY=LENIENT
 
 picard_mark_duplicates:
   extra: >-

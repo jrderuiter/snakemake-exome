@@ -1,30 +1,27 @@
-from os import path
-
-
 rule bwa:
     input:
-        ['fastq/trimmed/{sample}.{lane}.R1.fastq.gz',
-         'fastq/trimmed/{sample}.{lane}.R2.fastq.gz'],
+        ["fastq/trimmed/{sample}.{lane}.R1.fastq.gz",
+         "fastq/trimmed/{sample}.{lane}.R2.fastq.gz"],
     output:
-        temp('bam/aligned/{sample}.{lane}.bam')
+        temp("bam/aligned/{sample}.{lane}.bam")
     params:
-        index=config['bwa']['index'],
-        extra=config['bwa']['extra'],
-        sort='picard',
-        sort_order='coordinate',
-        sort_extra=config['bwa']['sort_extra']
+        index=config["bwa"]["index"],
+        extra=config["bwa"]["extra"],
+        sort="samtools",
+        sort_order="coordinate",
+        sort_extra=config["bwa"]["sort_extra"]
     threads:
-        config['bwa']['threads']
+        config["bwa"]["threads"]
     log:
-        'logs/bwa/{sample}.{lane}.log'
+        "logs/bwa/{sample}.{lane}.log"
     wrapper:
-        'file://' + path.join(workflow.basedir, 'wrappers/bwa/mem')
+        "0.17.0/bio/bwa/mem"
 
 
 def merge_inputs(wildcards):
     lanes = get_sample_lanes(wildcards.sample)
 
-    file_paths = ['bam/aligned/{}.{}.bam'.format(
+    file_paths = ["bam/aligned/{}.{}.bam".format(
                     wildcards.sample, lane)
                   for lane in lanes]
 
@@ -35,33 +32,33 @@ rule picard_merge_bam:
     input:
         merge_inputs
     output:
-        'bam/merged/{sample}.bam'
+        "bam/merged/{sample}.bam"
     params:
-        config['picard_merge_bam']['extra']
+        config["picard_merge_bam"]["extra"]
     log:
-        'logs/picard_merge_bam/{sample}.log'
+        "logs/picard_merge_bam/{sample}.log"
     wrapper:
-        'file://' + path.join(workflow.basedir, 'wrappers/picard/mergesamfiles')
+        "0.17.0/bio/picard/mergesamfiles"
 
 
 rule picard_mark_duplicates:
     input:
-        'bam/merged/{sample}.bam'
+        "bam/merged/{sample}.bam"
     output:
-        bam='bam/deduped/{sample}.bam',
-        metrics='qc/picard_mark_duplicates/{sample}.metrics'
+        bam="bam/deduped/{sample}.bam",
+        metrics="qc/picard_mark_duplicates/{sample}.metrics"
     params:
-        config['picard_mark_duplicates']['extra']
+        config["picard_mark_duplicates"]["extra"]
     log:
-        'logs/picard_mark_duplicates/{sample}.log'
+        "logs/picard_mark_duplicates/{sample}.log"
     wrapper:
-        '0.15.4/bio/picard/markduplicates'
+        "0.17.0/bio/picard/markduplicates"
 
 
 rule samtools_index:
     input:
-        'bam/deduped/{sample}.bam'
+        "bam/deduped/{sample}.bam"
     output:
-        'bam/deduped/{sample}.bam.bai'
+        "bam/deduped/{sample}.bam.bai"
     wrapper:
-        "0.15.4/bio/samtools/index"
+        "0.17.0/bio/samtools/index"

@@ -1,3 +1,6 @@
+from os import path
+
+
 rule freebayes:
     input:
         samples=expand('bam/deduped/{sample}.bam', sample=get_samples()),
@@ -10,6 +13,8 @@ rule freebayes:
         extra=config['freebayes']['extra']
     log:
         'logs/freebayes.log'
+    conda:
+        path.join(workflow.basedir, 'envs/freebayes.yaml')
     shell:
         'freebayes {params.extra} --fasta-reference {params.reference}'
         ' --targets {params.targets} {input.samples} > {output[0]} 2> {log}'

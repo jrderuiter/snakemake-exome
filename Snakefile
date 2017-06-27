@@ -33,6 +33,7 @@ rule all:
         'vcf/calls.vcf',
         'qc/multiqc_report.html'
 
+include: "rules/input.smk"
 include: "rules/fastq.smk"
 include: "rules/alignment.smk"
 include: "rules/freebayes.smk"

@@ -1,6 +1,6 @@
 # Snakemake workflow: exome
 
-[![Snakemake](https://img.shields.io/badge/snakemake-≥3.12.0-brightgreen.svg)](https://snakemake.bitbucket.io)
+[![Snakemake](https://img.shields.io/badge/snakemake-≥3.13.3-brightgreen.svg)](https://snakemake.bitbucket.io)
 [![wercker status](https://app.wercker.com/status/1a082864b6d5aded29f41c2e44387763/s/master "wercker status")](https://app.wercker.com/project/byKey/1a082864b6d5aded29f41c2e44387763)
 
 This is a Snakemake workflow for generating variant calls from exome sequencing
