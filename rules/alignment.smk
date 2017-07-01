@@ -27,25 +27,23 @@ def merge_inputs(wildcards):
 
     return file_paths
 
-
-rule picard_merge_bam:
+rule samtools_merge:
     input:
         merge_inputs
     output:
-        "bam/merged/{sample}.bam"
+        temp("bam/merged/{sample}.bam")
     params:
-        config["picard_merge_bam"]["extra"]
-    log:
-        "logs/picard_merge_bam/{sample}.log"
+        config["samtools_merge"]["extra"] + " -n"
+    threads:
+        config["samtools_merge"]["threads"]
     wrapper:
-        "0.17.0/bio/picard/mergesamfiles"
-
+        "0.17.0/bio/samtools/merge"
 
 rule picard_mark_duplicates:
     input:
         "bam/merged/{sample}.bam"
     output:
-        bam="bam/deduped/{sample}.bam",
+        bam="bam/final/{sample}.bam",
         metrics="qc/picard_mark_duplicates/{sample}.metrics"
     params:
         config["picard_mark_duplicates"]["extra"]
@@ -57,8 +55,8 @@ rule picard_mark_duplicates:
 
 rule samtools_index:
     input:
-        "bam/deduped/{sample}.bam"
+        "bam/final/{sample}.bam"
     output:
-        "bam/deduped/{sample}.bam.bai"
+        "bam/final/{sample}.bam.bai"
     wrapper:
         "0.17.0/bio/samtools/index"

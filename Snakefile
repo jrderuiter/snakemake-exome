@@ -7,6 +7,7 @@ configfile: 'config.yaml'
 ################################################################################
 
 samples = pd.read_csv('samples.tsv', sep='\t')
+is_pdx = 'pdx' in config
 
 
 ################################################################################
@@ -35,6 +36,11 @@ rule all:
 
 include: "rules/input.smk"
 include: "rules/fastq.smk"
-include: "rules/alignment.smk"
+
+if is_pdx:
+    include: "rules/alignment_pdx.smk"
+else:
+    include: "rules/alignment.smk"
+
 include: "rules/freebayes.smk"
 include: "rules/qc.smk"
