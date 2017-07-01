@@ -3,8 +3,8 @@ from os import path
 
 rule freebayes:
     input:
-        samples=expand('bam/deduped/{sample}.bam', sample=get_samples()),
-        indices=expand('bam/deduped/{sample}.bam.bai', sample=get_samples()),
+        samples=expand('bam/final/{sample}.bam', sample=get_samples()),
+        indices=expand('bam/final/{sample}.bam.bai', sample=get_samples()),
     output:
         'vcf/calls.vcf'
     params:

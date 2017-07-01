@@ -1,5 +1,5 @@
-rule multiqc:
-    input:
+def multiqc_inputs(wildcards):
+    inputs = [
         expand("qc/fastqc/{sample_lane}.{pair}_fastqc.html",
                sample_lane=get_samples_with_lane(), pair=["R1", "R2"]),
         expand("qc/samtools_stats/{sample}.txt",
@@ -8,6 +8,17 @@ rule multiqc:
               sample=get_samples()),
         expand("qc/picard_mark_duplicates/{sample}.metrics",
                sample=get_samples())
+    ]
+
+    if is_pdx:
+        inputs += [expand("qc/disambiguate/{sample}.txt", sample=get_samples())]
+
+    return [input_ for sub_inputs in inputs for input_ in sub_inputs]
+
+
+rule multiqc:
+    input:
+        multiqc_inputs
     output:
         "qc/multiqc_report.html"
     params:
@@ -32,7 +43,7 @@ rule fastqc:
 
 rule samtools_stats:
     input:
-        "bam/deduped/{sample}.bam"
+        "bam/final/{sample}.bam"
     output:
         "qc/samtools_stats/{sample}.txt"
     wrapper:
@@ -41,7 +52,7 @@ rule samtools_stats:
 
 rule picard_collect_hs_metrics:
     input:
-        "bam/deduped/{sample}.bam"
+        "bam/final/{sample}.bam"
     output:
         "qc/picard_collect_hs_metrics/{sample}.txt"
     params:
