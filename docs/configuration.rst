@@ -68,7 +68,7 @@ typically has an ``extra`` option, which allows you to pass arbitrary command
 line arguments to the underlying tool.
 
 .. literalinclude:: ../config.yaml
-    :lines: 15-65
+    :lines: 15-55
 
 PDX options
 ~~~~~~~~~~~
@@ -79,7 +79,7 @@ separate reads from the host and graft organisms of the PDX samples (which are
 typically mouse and human, respectively).
 
 .. literalinclude:: ../config.yaml
-    :lines: 67-
+    :lines: 58-
 
 The most important option in this section is ``bwa_index_host``, which defines
 the additional bwa index for the host genome. The index supplied in the general
