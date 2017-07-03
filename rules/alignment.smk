@@ -27,17 +27,19 @@ def merge_inputs(wildcards):
 
     return file_paths
 
+
 rule samtools_merge:
     input:
         merge_inputs
     output:
         temp("bam/merged/{sample}.bam")
     params:
-        config["samtools_merge"]["extra"] + " -n"
+        config["samtools_merge"]["extra"]
     threads:
         config["samtools_merge"]["threads"]
     wrapper:
         "0.17.0/bio/samtools/merge"
+
 
 rule picard_mark_duplicates:
     input:

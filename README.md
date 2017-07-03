@@ -3,7 +3,7 @@
 [![Snakemake](https://img.shields.io/badge/snakemake-≥3.13.3-brightgreen.svg)](https://snakemake.bitbucket.io)
 [![wercker status](https://app.wercker.com/status/1a082864b6d5aded29f41c2e44387763/s/master "wercker status")](https://app.wercker.com/project/byKey/1a082864b6d5aded29f41c2e44387763)
 
-This is a Snakemake workflow for generating variant calls from exome sequencing
+This is a Snakemake workflow for generating alignments from exome sequencing
 data (or similar targeted DNA-sequencing data). The workflow is designed to
 handle paired-end (and optionally multi-lane) sequencing data.
 
@@ -15,7 +15,6 @@ The workflow essentially performs the following steps:
 * The alignments are sorted using picard SortSam and indexed using samtools.
 * Bam files from multiple lanes are merged using picard MergeSamFiles.
 * Picard MarkDuplicates is used to remove optical/PCR duplicates.
-* Variant calls are generated using freebayes.
 
 QC statistics are generated using fastqc, samtools stats and picard
 CollectHSMetrics (to assess bait coverage). The stats are summarized into a

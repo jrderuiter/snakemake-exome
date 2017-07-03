@@ -52,15 +52,15 @@ rule samtools_stats:
 
 rule picard_collect_hs_metrics:
     input:
-        "bam/final/{sample}.bam"
+        bam="bam/final/{sample}.bam",
+        reference=config["picard_collect_hs_metrics"]["reference"],
+        # Baits and targets should be given as interval lists. These can
+        # can be generated from bed files using picard BedToIntervalList.
+        bait_intervals=config["picard_collect_hs_metrics"]["bait_intervals"],
+        target_intervals=config["picard_collect_hs_metrics"]["target_intervals"]
     output:
         "qc/picard_collect_hs_metrics/{sample}.txt"
     params:
-        # Baits and targets should be given as interval lists. These can
-        # can be generated from bed files using picard BedToIntervalList.
-        reference=config["picard_collect_hs_metrics"]["reference"],
-        bait_intervals=config["picard_collect_hs_metrics"]["bait_intervals"],
-        target_intervals=config["picard_collect_hs_metrics"]["target_intervals"],
         extra=config["picard_collect_hs_metrics"]["extra"]
     log:
         "logs/picard_collect_hs_metrics/{sample}.log"

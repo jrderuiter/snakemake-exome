@@ -46,9 +46,9 @@ picard_mark_duplicates:
     VALIDATION_STRINGENCY=LENIENT
 
 picard_collect_hs_metrics:
-    reference: '/path/to/reference'
-    bait_intervals: '/path/to/capture.intervals'
-    target_intervals: '/path/to/capture.intervals'
+    reference: 'input/genome.fa'
+    bait_intervals: 'input/capture.intervals'
+    target_intervals: 'input/capture.intervals'
     extra: '-Xmx4g'
 
 multiqc:
@@ -56,11 +56,12 @@ multiqc:
 
 freebayes:
   reference: '/path/to/genome.fasta'
-  targets: '/path/to/capture.bed'
+  targets: 'input/capture.bed'
   extra: >-
     --min-alternate-fraction 0.1
     --min-alternate-count 3
     --min-coverage 10
+  threads: 5
 
 
 ################################################################################
