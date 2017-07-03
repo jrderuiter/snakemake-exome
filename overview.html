@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Snakemake-exome &mdash; snakemake-exome 0.1 documentation</title>
+  <title>Overview &mdash; snakemake-exome 0.1 documentation</title>
   
 
   
@@ -35,8 +35,9 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="snakemake-exome 0.1 documentation" href="#"/>
-        <link rel="next" title="Overview" href="overview.html"/> 
+    <link rel="top" title="snakemake-exome 0.1 documentation" href="index.html"/>
+        <link rel="next" title="Installation" href="installation.html"/>
+        <link rel="prev" title="Snakemake-exome" href="index.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -55,7 +56,7 @@
           
 
           
-            <a href="#" class="icon icon-home"> snakemake-exome
+            <a href="index.html" class="icon icon-home"> snakemake-exome
           
 
           
@@ -89,8 +90,12 @@
               
             
             
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#standard-workflow">Standard workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pdx-workflow">PDX workflow</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
@@ -111,7 +116,7 @@
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">snakemake-exome</a>
+          <a href="index.html">snakemake-exome</a>
         
       </nav>
 
@@ -139,15 +144,15 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="#">Docs</a> &raquo;</li>
+      <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Snakemake-exome</li>
+      <li>Overview</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/overview.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -160,19 +165,45 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="snakemake-exome">
-<h1>Snakemake-exome<a class="headerlink" href="#snakemake-exome" title="Permalink to this headline">¶</a></h1>
-<p><a class="reference external" href="https://snakemake.bitbucket.io"><img alt="Snakemake" src="https://img.shields.io/badge/snakemake-≥3.13.3-brightgreen.svg" /></a> <a class="reference external" href="https://app.wercker.com/project/byKey/1a082864b6d5aded29f41c2e44387763"><img alt="wercker status" src="https://app.wercker.com/status/1a082864b6d5aded29f41c2e44387763/s/master" /></a></p>
-<p>Snakemake-exome is a snakemake workflow that generates alignments from exome
-sequencing data (or similar targeted DNA-sequencing data). The workflow is
-designed to handle paired-end (and optionally multi-lane) sequencing data.
-Processing of patient-derived xenograft (PDX) samples is also supported, by
-using disambiguate to separate graft/host sequence reads.</p>
-<p>If you use this workflow in a paper, don’t forget to give credits
-to the authors by citing the URL of this repository and, if available, its
-DOI (see above).</p>
-<div class="toctree-wrapper compound">
-</div>
+  <div class="section" id="overview">
+<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
+<p>The workflow can be run in two modes: the ‘standard’ workflow (for normal
+sequencing) data and a ‘PDX’ workflow, which handles host/graft read separation
+for patient-derived xenograft samples.</p>
+<div class="section" id="standard-workflow">
+<h2>Standard workflow<a class="headerlink" href="#standard-workflow" title="Permalink to this headline">¶</a></h2>
+<p>The standard workflow essentially performs the following steps:</p>
+<ul class="simple">
+<li>The input reads are trimmed to remove adapters and/or poor quality base calls
+using cutadapt.</li>
+<li>The trimmed reads are aligned to the reference genome using bwa mem.</li>
+<li>The alignments are sorted and indexed using samtools.</li>
+<li>Bam files from multiple lanes are merged using picard MergeSamFiles.</li>
+<li>Picard MarkDuplicates is used to remove optical/PCR duplicates.</li>
+<li>The final alignments are indexed using samtools index.</li>
+</ul>
+<p>QC statistics are generated using fastqc, samtools stats and picard
+CollectHSMetrics (to assess bait coverage). The stats are summarized into a
+single report using multiqc.</p>
+<p>This results in the following dependency graph:</p>
+<img alt="_images/dag.svg" src="_images/dag.svg" /></div>
+<div class="section" id="pdx-workflow">
+<h2>PDX workflow<a class="headerlink" href="#pdx-workflow" title="Permalink to this headline">¶</a></h2>
+<p>The PDX workflow is a slightly modified version of the standard workflow, which
+aligns the reads to two reference genome (the host and graft reference genomes)
+and uses <a class="reference external" href="https://github.com/AstraZeneca-NGS/disambiguate">disambiguate</a> to remove sequences originating from the host organism.
+For typical PDX samples, this means removing the mouse (host) reads, leaving
+the human (graft) reads for further analysis.</p>
+<p>The PDX workflow adds the following additional steps:</p>
+<ul class="simple">
+<li>The reads are aligned to two references in <code class="docutils literal"><span class="pre">bwa_host</span></code> and <code class="docutils literal"><span class="pre">bwa_graft</span></code>
+instead of using a single reference.</li>
+<li>The resulting alignments are sorted by queryname using samtools and
+‘disambiguated’ using disamgibuate.</li>
+<li>The disambiguated alignments are sorted by queryname using sambamba.</li>
+</ul>
+<p>This results in the following dependency graph:</p>
+<img alt="_images/dag_pdx.svg" src="_images/dag_pdx.svg" /></div>
 </div>
 
 
@@ -185,8 +216,10 @@ DOI (see above).</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="overview.html" class="btn btn-neutral float-right" title="Overview" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="installation.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
+      
+        <a href="index.html" class="btn btn-neutral" title="Snakemake-exome" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
