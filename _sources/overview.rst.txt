@@ -8,13 +8,13 @@ for patient-derived xenograft samples.
 Standard workflow
 -----------------
 
-The standard workflow essentially performs the following steps:
+The standard (non-PDX) workflow essentially performs the following steps:
 
 * The input reads are trimmed to remove adapters and/or poor quality base calls
   using cutadapt.
 * The trimmed reads are aligned to the reference genome using bwa mem.
 * The alignments are sorted and indexed using samtools.
-* Bam files from multiple lanes are merged using picard MergeSamFiles.
+* Bam files from multiple lanes are merged using samtools merge.
 * Picard MarkDuplicates is used to remove optical/PCR duplicates.
 * The final alignments are indexed using samtools index.
 

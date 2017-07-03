@@ -172,13 +172,13 @@ sequencing) data and a ‘PDX’ workflow, which handles host/graft read separat
 for patient-derived xenograft samples.</p>
 <div class="section" id="standard-workflow">
 <h2>Standard workflow<a class="headerlink" href="#standard-workflow" title="Permalink to this headline">¶</a></h2>
-<p>The standard workflow essentially performs the following steps:</p>
+<p>The standard (non-PDX) workflow essentially performs the following steps:</p>
 <ul class="simple">
 <li>The input reads are trimmed to remove adapters and/or poor quality base calls
 using cutadapt.</li>
 <li>The trimmed reads are aligned to the reference genome using bwa mem.</li>
 <li>The alignments are sorted and indexed using samtools.</li>
-<li>Bam files from multiple lanes are merged using picard MergeSamFiles.</li>
+<li>Bam files from multiple lanes are merged using samtools merge.</li>
 <li>Picard MarkDuplicates is used to remove optical/PCR duplicates.</li>
 <li>The final alignments are indexed using samtools index.</li>
 </ul>
