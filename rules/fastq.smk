@@ -5,7 +5,7 @@ rule cutadapt:
     output:
         fastq1=temp("fastq/trimmed/{sample}.{lane}.R1.fastq.gz"),
         fastq2=temp("fastq/trimmed/{sample}.{lane}.R2.fastq.gz"),
-        qc="qc/cutadapt/{sample}.{lane}.qc.txt"
+        qc="qc/cutadapt/{sample}.{lane}.txt"
     params:
         config["cutadapt"]["extra"]
     log:

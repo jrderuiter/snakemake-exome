@@ -2,10 +2,11 @@ def multiqc_inputs(wildcards):
     inputs = [
         expand("qc/fastqc/{sample_lane}.{pair}_fastqc.html",
                sample_lane=get_samples_with_lane(), pair=["R1", "R2"]),
-        expand("qc/samtools_stats/{sample}.txt",
-               sample=get_samples()),
+        expand("qc/cutadapt/{sample_lane}.txt",
+               sample_lane=get_samples_with_lane()),
+        expand("qc/samtools_stats/{sample}.txt", sample=get_samples()),
         expand("qc/picard_collect_hs_metrics/{sample}.txt",
-              sample=get_samples()),
+               sample=get_samples()),
         expand("qc/picard_mark_duplicates/{sample}.metrics",
                sample=get_samples())
     ]
