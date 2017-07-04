@@ -98,8 +98,9 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Configuration</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#sample-definition">Sample definition</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pipeline-configuration">Pipeline configuration</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#input-options">Input options</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#general-options">General options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#input-options">Input options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rule-options">Rule options</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pdx-options">PDX options</a></li>
 </ul>
 </li>
@@ -207,11 +208,28 @@ were sequenced on a single lane.</p>
 <h2>Pipeline configuration<a class="headerlink" href="#pipeline-configuration" title="Permalink to this headline">¶</a></h2>
 <p>The individual steps of the pipeline are configured using the <code class="docutils literal"><span class="pre">config.yaml</span></code>
 file. This config file contains three different sections, which define
-configurations for the inputs, general pipeline steps and (optional) steps for
-handling patient-derived xenograft (PDX) samples.</p>
+configurations for the overall workflow, for the inputs and for each specific
+rule, respectively.</p>
+<div class="section" id="general-options">
+<h3>General options<a class="headerlink" href="#general-options" title="Permalink to this headline">¶</a></h3>
+<p>The first section defines options regarding the overall workflow. Currently
+this provides a single option, <code class="docutils literal"><span class="pre">pdx</span></code>, which defines whether the standard
+version or the PDX version of the workflow is used. Note that if the PDX
+workflow is used, a few PDX-specific rules may require additional configuration
+(see below for more details).</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1">################################################################################</span>
+<span class="c1"># General configuration                                                        #</span>
+<span class="c1">################################################################################</span>
+
+<span class="n">general</span><span class="p">:</span>
+  <span class="n">pdx</span><span class="p">:</span> <span class="kc">False</span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="input-options">
 <h3>Input options<a class="headerlink" href="#input-options" title="Permalink to this headline">¶</a></h3>
-<p>The first section defines several options regarding the input files:</p>
+<p>The second section defines several options regarding the handling of the
+input files:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1">################################################################################</span>
 <span class="c1"># Input configuration                                                          #</span>
 <span class="c1">################################################################################</span>
@@ -228,26 +246,29 @@ handling patient-derived xenograft (PDX) samples.</p>
 </div>
 <p>Here, <code class="docutils literal"><span class="pre">dir</span></code> is an optional value that defines the directory containing
 the input files. If given, file paths provided in <code class="docutils literal"><span class="pre">samples.tsv</span></code> are
-interpreted relative to this directory. Its value is ignored if http/ftp urls
+sought relative to this directory. Its value is ignored if http/ftp urls
 are used for the inputs.</p>
 <p>The <code class="docutils literal"><span class="pre">ftp</span></code> section defines the username/password to use when downloading
 samples over an ftp connection. These values can be ommitted when downloading
 files from an anonymous ftp server.</p>
 </div>
-<div class="section" id="general-options">
-<h3>General options<a class="headerlink" href="#general-options" title="Permalink to this headline">¶</a></h3>
-<p>The second section provides detailed configuration options for the different
+<div class="section" id="rule-options">
+<h3>Rule options<a class="headerlink" href="#rule-options" title="Permalink to this headline">¶</a></h3>
+<p>The third section provides detailed configuration options for the different
 steps of the pipeline. In general, each step of the pipeline has a set of
 configurable options under the same name as the step itself. The options
 themselves are specific for each step and the corresponding tool, but each step
 typically has an <code class="docutils literal"><span class="pre">extra</span></code> option, which allows you to pass arbitrary command
 line arguments to the underlying tool.</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1">################################################################################</span>
-<span class="c1"># General configuration                                                        #</span>
+<span class="c1"># Rule configuration                                                           #</span>
 <span class="c1">################################################################################</span>
 
+<span class="c1">#### General/shared rules ####</span>
+
 <span class="n">cutadapt</span><span class="p">:</span>
-  <span class="c1"># Example trims Illumina Truseq PE adapters.</span>
+  <span class="c1"># Example trims Illumina Truseq PE adapters, removes low quality bases and</span>
+  <span class="c1"># drops any mates with either read shorter than 60bp after trimming.</span>
   <span class="n">extra</span><span class="p">:</span> <span class="o">&gt;-</span>
     <span class="o">-</span><span class="n">a</span> <span class="n">AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC</span>
     <span class="o">-</span><span class="n">A</span> <span class="n">AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCATT</span>
@@ -259,9 +280,13 @@ line arguments to the underlying tool.</p>
 
 <span class="n">bwa</span><span class="p">:</span>
   <span class="n">index</span><span class="p">:</span> <span class="s1">&#39;/path/to/index&#39;</span>
-  <span class="c1"># Note that MarkDuplicates requires the LB tag to be set.</span>
-  <span class="c1"># Replace &#39;CENTRE&#39; with the name of your company/institute.</span>
-  <span class="n">extra</span><span class="p">:</span> <span class="s2">&quot;-r </span><span class="se">\&quot;</span><span class="s2">@RG</span><span class="se">\\</span><span class="s2">tID:</span><span class="si">{sample}</span><span class="s2">.</span><span class="si">{lane}</span><span class="se">\\</span><span class="s2">tSM:</span><span class="si">{sample}</span><span class="se">\\</span><span class="s2">tLB:</span><span class="si">{sample}</span><span class="se">\\</span><span class="s2">t</span><span class="se">\</span>
+  <span class="c1"># Host genome index, only required for PDX samples. If used,</span>
+  <span class="c1"># index (above) should refer to the graft genome index.</span>
+  <span class="n">index_host</span><span class="p">:</span> <span class="s1">&#39;/path/to/host_index&#39;</span>
+  <span class="c1"># Extra argument for adding read group information (which is critical</span>
+  <span class="c1"># for many downstream steps). Replace &#39;CENTRE&#39; with the name of your</span>
+  <span class="c1"># company/institute.</span>
+  <span class="n">extra</span><span class="p">:</span> <span class="s2">&quot;-M -R </span><span class="se">\&quot;</span><span class="s2">@RG</span><span class="se">\\</span><span class="s2">tID:</span><span class="si">{sample}</span><span class="s2">.</span><span class="si">{lane}</span><span class="se">\\</span><span class="s2">tSM:</span><span class="si">{sample}</span><span class="se">\\</span><span class="s2">tLB:</span><span class="si">{sample}</span><span class="se">\\</span><span class="s2">t</span><span class="se">\</span>
 <span class="s2">          PU:</span><span class="si">{sample}</span><span class="s2">.</span><span class="si">{lane}</span><span class="se">\\</span><span class="s2">tPL:ILLUMINA</span><span class="se">\\</span><span class="s2">tCN:CENTRE</span><span class="se">\&quot;</span><span class="s2">&quot;</span>
   <span class="n">sort_extra</span><span class="p">:</span> <span class="s1">&#39;&#39;</span>
   <span class="n">threads</span><span class="p">:</span> <span class="mi">5</span>
@@ -283,8 +308,25 @@ line arguments to the underlying tool.</p>
 
 <span class="n">multiqc</span><span class="p">:</span>
   <span class="n">extra</span><span class="p">:</span> <span class="s1">&#39;&#39;</span>
+
+
+<span class="c1">#### PDX-specific rules ####</span>
+
+<span class="n">disambiguate</span><span class="p">:</span>
+  <span class="n">extra</span><span class="p">:</span> <span class="s1">&#39;&#39;</span>
+
+<span class="n">sambamba_sort</span><span class="p">:</span>
+  <span class="n">extra</span><span class="p">:</span> <span class="s1">&#39;&#39;</span>
+  <span class="n">threads</span><span class="p">:</span> <span class="mi">5</span>
 </pre></div>
 </div>
+<p>This section is divided into two sub-sections: general and PDX-specific. The
+PDX-specific section contains additional options for rules that are only used
+in the PDX workflow.</p>
+<p>Note that <code class="docutils literal"><span class="pre">index_host</span></code> (under the <code class="docutils literal"><span class="pre">bwa</span></code> options) should also be
+defined when processing PDX samples, as this additional index of the host
+genome is required to distinguish host/graft reads in PDX samples. In this
+case, <code class="docutils literal"><span class="pre">index</span></code> should refer to the index of the graft genome.</p>
 </div>
 <div class="section" id="pdx-options">
 <h3>PDX options<a class="headerlink" href="#pdx-options" title="Permalink to this headline">¶</a></h3>
@@ -292,19 +334,29 @@ line arguments to the underlying tool.</p>
 PDX samples. If provided, the pipeline performs a number of extra steps to
 separate reads from the host and graft organisms of the PDX samples (which are
 typically mouse and human, respectively).</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1">################################################################################</span>
-<span class="c1"># PDX configuration                                                            #</span>
-<span class="c1">################################################################################</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">picard_mark_duplicates</span><span class="p">:</span>
+  <span class="n">extra</span><span class="p">:</span> <span class="o">&gt;-</span>
+    <span class="o">-</span><span class="n">XX</span><span class="p">:</span><span class="n">ParallelGCThreads</span><span class="o">=</span><span class="mi">5</span>
+    <span class="n">VALIDATION_STRINGENCY</span><span class="o">=</span><span class="n">LENIENT</span>
 
-<span class="c1"># pdx:</span>
-<span class="c1">#   bwa_index_host: &#39;/path/to/index&#39;</span>
+<span class="n">picard_collect_hs_metrics</span><span class="p">:</span>
+    <span class="n">reference</span><span class="p">:</span> <span class="s1">&#39;input/genome.fa&#39;</span>
+    <span class="n">bait_intervals</span><span class="p">:</span> <span class="s1">&#39;input/capture.intervals&#39;</span>
+    <span class="n">target_intervals</span><span class="p">:</span> <span class="s1">&#39;input/capture.intervals&#39;</span>
+    <span class="n">extra</span><span class="p">:</span> <span class="s1">&#39;-Xmx4g&#39;</span>
 
-<span class="c1">#   disambiguate:</span>
-<span class="c1">#     extra: &#39;&#39;</span>
+<span class="n">multiqc</span><span class="p">:</span>
+  <span class="n">extra</span><span class="p">:</span> <span class="s1">&#39;&#39;</span>
 
-<span class="c1">#   sambamba_sort:</span>
-<span class="c1">#     extra: &#39;&#39;</span>
-<span class="c1">#     threads: 5</span>
+
+<span class="c1">#### PDX-specific rules ####</span>
+
+<span class="n">disambiguate</span><span class="p">:</span>
+  <span class="n">extra</span><span class="p">:</span> <span class="s1">&#39;&#39;</span>
+
+<span class="n">sambamba_sort</span><span class="p">:</span>
+  <span class="n">extra</span><span class="p">:</span> <span class="s1">&#39;&#39;</span>
+  <span class="n">threads</span><span class="p">:</span> <span class="mi">5</span>
 </pre></div>
 </div>
 <p>The most important option in this section is <code class="docutils literal"><span class="pre">bwa_index_host</span></code>, which defines
