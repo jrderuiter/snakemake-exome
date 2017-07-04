@@ -37,30 +37,44 @@ Pipeline configuration
 
 The individual steps of the pipeline are configured using the ``config.yaml``
 file. This config file contains three different sections, which define
-configurations for the inputs, general pipeline steps and (optional) steps for
-handling patient-derived xenograft (PDX) samples.
+configurations for the overall workflow, for the inputs and for each specific
+rule, respectively.
+
+General options
+~~~~~~~~~~~~~~~
+
+The first section defines options regarding the overall workflow. Currently
+this provides a single option, ``pdx``, which defines whether the standard
+version or the PDX version of the workflow is used. Note that if the PDX
+workflow is used, a few PDX-specific rules may require additional configuration
+(see below for more details).
+
+.. literalinclude:: ../config.yaml
+    :lines: 1-6
+
 
 Input options
 ~~~~~~~~~~~~~
 
-The first section defines several options regarding the input files:
+The second section defines several options regarding the handling of the
+input files:
 
 .. literalinclude:: ../config.yaml
-    :lines: 1-12
+    :lines: 9-20
 
 Here, ``dir`` is an optional value that defines the directory containing
 the input files. If given, file paths provided in ``samples.tsv`` are
-interpreted relative to this directory. Its value is ignored if http/ftp urls
+sought relative to this directory. Its value is ignored if http/ftp urls
 are used for the inputs.
 
 The ``ftp`` section defines the username/password to use when downloading
 samples over an ftp connection. These values can be ommitted when downloading
 files from an anonymous ftp server.
 
-General options
-~~~~~~~~~~~~~~~
+Rule options
+~~~~~~~~~~~~
 
-The second section provides detailed configuration options for the different
+The third section provides detailed configuration options for the different
 steps of the pipeline. In general, each step of the pipeline has a set of
 configurable options under the same name as the step itself. The options
 themselves are specific for each step and the corresponding tool, but each step
@@ -68,7 +82,16 @@ typically has an ``extra`` option, which allows you to pass arbitrary command
 line arguments to the underlying tool.
 
 .. literalinclude:: ../config.yaml
-    :lines: 15-55
+    :lines: 23-
+
+This section is divided into two sub-sections: general and PDX-specific. The
+PDX-specific section contains additional options for rules that are only used
+in the PDX workflow.
+
+Note that ``index_host`` (under the ``bwa`` options) should also be
+defined when processing PDX samples, as this additional index of the host
+genome is required to distinguish host/graft reads in PDX samples. In this
+case, ``index`` should refer to the index of the graft genome.
 
 PDX options
 ~~~~~~~~~~~

@@ -1,4 +1,12 @@
 ################################################################################
+# General configuration                                                        #
+################################################################################
+
+general:
+  pdx: False
+
+
+################################################################################
 # Input configuration                                                          #
 ################################################################################
 
@@ -13,11 +21,14 @@ input:
 
 
 ################################################################################
-# General configuration                                                        #
+# Rule configuration                                                           #
 ################################################################################
 
+#### General/shared rules ####
+
 cutadapt:
-  # Example trims Illumina Truseq PE adapters.
+  # Example trims Illumina Truseq PE adapters, removes low quality bases and
+  # drops any mates with either read shorter than 60bp after trimming.
   extra: >-
     -a AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC
     -A AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCATT
@@ -29,9 +40,13 @@ fastqc:
 
 bwa:
   index: '/path/to/index'
-  # Note that MarkDuplicates requires the LB tag to be set.
-  # Replace 'CENTRE' with the name of your company/institute.
-  extra: "-r \"@RG\\tID:{sample}.{lane}\\tSM:{sample}\\tLB:{sample}\\t\
+  # Host genome index, only required for PDX samples. If used,
+  # index (above) should refer to the graft genome index.
+  index_host: '/path/to/host_index'
+  # Extra argument for adding read group information (which is critical
+  # for many downstream steps). Replace 'CENTRE' with the name of your
+  # company/institute.
+  extra: "-M -R \"@RG\\tID:{sample}.{lane}\\tSM:{sample}\\tLB:{sample}\\t\
           PU:{sample}.{lane}\\tPL:ILLUMINA\\tCN:CENTRE\""
   sort_extra: ''
   threads: 5
@@ -55,16 +70,11 @@ multiqc:
   extra: ''
 
 
-################################################################################
-# PDX configuration                                                            #
-################################################################################
+#### PDX-specific rules ####
 
-# pdx:
-#   bwa_index_host: '/path/to/index'
+disambiguate:
+  extra: ''
 
-#   disambiguate:
-#     extra: ''
-
-#   sambamba_sort:
-#     extra: ''
-#     threads: 5
+sambamba_sort:
+  extra: ''
+  threads: 5

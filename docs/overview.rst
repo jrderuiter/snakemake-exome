@@ -24,7 +24,9 @@ single report using multiqc.
 
 This results in the following dependency graph:
 
-.. image:: images/dag.svg
+.. figure:: images/dag.svg
+  :align: center
+
 
 PDX workflow
 ------------
@@ -45,6 +47,7 @@ The PDX workflow adds the following additional steps:
 
 This results in the following dependency graph:
 
-.. image:: images/dag_pdx.svg
+.. figure:: images/dag_pdx.svg
+  :align: center
 
 .. _disambiguate: https://github.com/AstraZeneca-NGS/disambiguate

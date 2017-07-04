@@ -7,7 +7,7 @@ configfile: 'config.yaml'
 ################################################################################
 
 samples = pd.read_csv('samples.tsv', sep='\t')
-is_pdx = 'pdx' in config
+is_pdx = config["general"].get("pdx", False)
 
 
 ################################################################################
