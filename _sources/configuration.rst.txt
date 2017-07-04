@@ -85,4 +85,4 @@ from the mouse reads (the host).
 The workflow is run in 'PDX' mode if a host index is supplied for the ``bwa``
 rule (using the ``index_host`` option). If this option is omitted or left
 empty, the workflow runs in the 'standard' mode, in which reads are only
-aligned to a single-reference genome.
+aligned to a single reference genome.
