@@ -25,7 +25,7 @@ rule bwa_host:
     output:
         temp("bam/aligned/{sample}.{lane}.host.bam")
     params:
-        index=config["pdx"]["bwa_index_host"],
+        index=config["bwa"]["index_host"],
         extra=config["bwa"]["extra"],
         sort="samtools",
         sort_order="queryname",
@@ -74,7 +74,7 @@ rule disambiguate:
     params:
         algorithm="bwa",
         prefix="{sample}",
-        extra=config["pdx"]["disambiguate"]["extra"]
+        extra=config["disambiguate"]["extra"]
     wrapper:
         "0.17.0/bio/ngs-disambiguate"
 
@@ -85,9 +85,9 @@ rule sambamba_sort:
     output:
         "bam/sorted/{sample}.bam"
     params:
-        config["pdx"]["sambamba_sort"]["extra"]
+        config["sambamba_sort"]["extra"]
     threads:
-        config["pdx"]["sambamba_sort"]["threads"]
+        config["sambamba_sort"]["threads"]
     wrapper:
         "0.17.0/bio/sambamba/sort"
 
