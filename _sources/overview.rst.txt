@@ -39,11 +39,10 @@ the human (graft) reads for further analysis.
 
 The PDX workflow adds the following additional steps:
 
-* The reads are aligned to two references in ``bwa_host`` and ``bwa_graft``
-  instead of using a single reference.
+* The reads are aligned to two references in ``bwa_host`` and ``bwa_graft``.
 * The resulting alignments are sorted by queryname using samtools and
-  'disambiguated' using disamgibuate.
-* The disambiguated alignments are sorted by queryname using sambamba.
+  subsequently 'disambiguated' using the disamgibuate tool from AstraZeneca.
+* The disambiguated alignments are sorted by coordinate using sambamba.
 
 This results in the following dependency graph:
 

@@ -200,11 +200,10 @@ For typical PDX samples, this means removing the mouse (host) reads, leaving
 the human (graft) reads for further analysis.</p>
 <p>The PDX workflow adds the following additional steps:</p>
 <ul class="simple">
-<li>The reads are aligned to two references in <code class="docutils literal"><span class="pre">bwa_host</span></code> and <code class="docutils literal"><span class="pre">bwa_graft</span></code>
-instead of using a single reference.</li>
+<li>The reads are aligned to two references in <code class="docutils literal"><span class="pre">bwa_host</span></code> and <code class="docutils literal"><span class="pre">bwa_graft</span></code>.</li>
 <li>The resulting alignments are sorted by queryname using samtools and
-‘disambiguated’ using disamgibuate.</li>
-<li>The disambiguated alignments are sorted by queryname using sambamba.</li>
+subsequently ‘disambiguated’ using the disamgibuate tool from AstraZeneca.</li>
+<li>The disambiguated alignments are sorted by coordinate using sambamba.</li>
 </ul>
 <p>This results in the following dependency graph:</p>
 <div class="figure align-center">
