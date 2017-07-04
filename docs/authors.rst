@@ -4,7 +4,7 @@ Credits
 Development Lead
 ----------------
 
-* Julian de Ruiter <julianderuiter@gmail.com>
+* Julian de Ruiter <julianderuiter-at-gmail-dot-com>
 
 Contributors
 ------------
