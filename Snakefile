@@ -7,7 +7,7 @@ configfile: 'config.yaml'
 ################################################################################
 
 samples = pd.read_csv('samples.tsv', sep='\t')
-is_pdx = config["general"].get("pdx", False)
+is_pdx = bool(config["bwa"]["index_host"])
 
 
 ################################################################################
