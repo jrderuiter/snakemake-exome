@@ -43,7 +43,7 @@ This results in the following dependency graph:
 The PDX workflow is a slightly modified version of the standard workflow, which
 aligns the reads to two reference genome (the host and graft reference genomes)
 and uses disambiguate_ to remove sequences originating from the host organism.
-See the docs for more details.
+See the docs_ for more details.
 
 Documentation
 -------------

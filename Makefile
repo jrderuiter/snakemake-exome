@@ -1,4 +1,3 @@
-
 gh-pages:
 	git checkout gh-pages
 	find ./* -not -path '*/\.*' -prune -exec rm -r "{}" \;
