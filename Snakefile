@@ -2,12 +2,13 @@ import pandas as pd
 
 configfile: 'config.yaml'
 
+
 ################################################################################
 # Globals                                                                      #
 ################################################################################
 
 samples = pd.read_csv('samples.tsv', sep='\t')
-is_pdx = bool(config["bwa"]["index_host"])
+is_pdx = bool(config["bwa"].get("index_host", None))
 
 
 ################################################################################
