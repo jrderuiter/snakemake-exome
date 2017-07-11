@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Configuration &mdash; snakemake-exome 0.1 documentation</title>
+  <title>Configuration &mdash; snakemake-exome 0.1.0 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="snakemake-exome 0.1 documentation" href="index.html"/>
+    <link rel="top" title="snakemake-exome 0.1.0 documentation" href="index.html"/>
         <link rel="next" title="Usage" href="usage.html"/>
         <link rel="prev" title="Installation" href="installation.html"/> 
 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                0.1
+                0.1.0
               </div>
             
           
@@ -98,11 +98,11 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Configuration</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#sample-definition">Sample definition</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pipeline-configuration">Pipeline configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#general-options">General options</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#input-options">Input options</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#rule-options">Rule options</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#standard-vs-pdx-mode">Standard vs PDX mode</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
@@ -206,8 +206,26 @@ were sequenced on a single lane.</p>
 <div class="section" id="pipeline-configuration">
 <h2>Pipeline configuration<a class="headerlink" href="#pipeline-configuration" title="Permalink to this headline">¶</a></h2>
 <p>The individual steps of the pipeline are configured using the <code class="docutils literal"><span class="pre">config.yaml</span></code>
-file. This config file contains two different sections, which define
-configurations for the inputs and for each specific rule, respectively.</p>
+file. This config file contains three different sections, which define
+general pipeline options, options for the inputs and options for each
+specific rule, respectively.</p>
+<div class="section" id="general-options">
+<h3>General options<a class="headerlink" href="#general-options" title="Permalink to this headline">¶</a></h3>
+<p>The general section defines several options regarding the high-level behavior
+of the pipeline. The section currently defines a single option <code class="docutils literal"><span class="pre">pdx</span></code>, which
+determines whether the ‘standard’ or PDX version of the workflow is run:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1">################################################################################</span>
+<span class="c1"># Pipeline options                                                             #</span>
+<span class="c1">################################################################################</span>
+
+<span class="n">options</span><span class="p">:</span>
+  <span class="n">pdx</span><span class="p">:</span> <span class="kc">False</span>
+</pre></div>
+</div>
+<p>Note that a host index should be supplied for the <code class="docutils literal"><span class="pre">bwa</span></code> rule (using the
+<code class="docutils literal"><span class="pre">index_host</span></code> option, see rule options below for more details) when running
+the PDX workflow.</p>
+</div>
 <div class="section" id="input-options">
 <h3>Input options<a class="headerlink" href="#input-options" title="Permalink to this headline">¶</a></h3>
 <p>The input section defines several options regarding the handling of the
@@ -223,6 +241,7 @@ input files:</p>
   <span class="c1"># Optional: configuration to use for remote (FTP) input files.</span>
   <span class="c1"># ftp:</span>
   <span class="c1">#   username: &#39;user&#39;</span>
+  <span class="c1">#   password: &#39;pass&#39;</span>
 </pre></div>
 </div>
 <p>Here, <code class="docutils literal"><span class="pre">dir</span></code> is an optional value that defines the directory containing
@@ -263,11 +282,11 @@ option, which allows you to pass arbitrary arguments to the underlying tool.</p>
   <span class="c1"># Host genome index, only required for PDX samples. If used,</span>
   <span class="c1"># index (above) should refer to the graft genome index.</span>
   <span class="n">index_host</span><span class="p">:</span> <span class="s1">&#39;/path/to/host_index&#39;</span>
-  <span class="c1"># Extra argument for adding read group information (which is critical</span>
-  <span class="c1"># for many downstream steps). Replace &#39;CENTRE&#39; with the name of your</span>
-  <span class="c1"># company/institute.</span>
-  <span class="n">extra</span><span class="p">:</span> <span class="s2">&quot;-M -R </span><span class="se">\&quot;</span><span class="s2">@RG</span><span class="se">\\</span><span class="s2">tID:</span><span class="si">{sample}</span><span class="s2">.</span><span class="si">{lane}</span><span class="se">\\</span><span class="s2">tSM:</span><span class="si">{sample}</span><span class="se">\\</span><span class="s2">tLB:</span><span class="si">{sample}</span><span class="se">\\</span><span class="s2">t</span><span class="se">\</span>
-<span class="s2">          PU:</span><span class="si">{sample}</span><span class="s2">.</span><span class="si">{lane}</span><span class="se">\\</span><span class="s2">tPL:ILLUMINA</span><span class="se">\\</span><span class="s2">tCN:CENTRE</span><span class="se">\&quot;</span><span class="s2">&quot;</span>
+  <span class="c1"># Read group information (which is critical for many downstream steps).</span>
+  <span class="c1"># Replace &#39;CENTRE&#39; with the name of your company/institute.</span>
+  <span class="n">readgroup</span><span class="p">:</span> <span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2">@RG</span><span class="se">\\</span><span class="s2">tID:</span><span class="si">{sample}</span><span class="s2">.</span><span class="si">{lane}</span><span class="se">\\</span><span class="s2">tSM:</span><span class="si">{sample}</span><span class="se">\\</span><span class="s2">tLB:</span><span class="si">{sample}</span><span class="se">\\</span><span class="s2">t</span><span class="se">\</span>
+<span class="s2">              PU:</span><span class="si">{sample}</span><span class="s2">.</span><span class="si">{lane}</span><span class="se">\\</span><span class="s2">tPL:ILLUMINA</span><span class="se">\\</span><span class="s2">tCN:CENTRE</span><span class="se">\&quot;</span><span class="s2">&quot;</span>
+  <span class="n">extra</span><span class="p">:</span> <span class="s1">&#39;-M&#39;</span>
   <span class="n">sort_extra</span><span class="p">:</span> <span class="s1">&#39;&#39;</span>
   <span class="n">threads</span><span class="p">:</span> <span class="mi">5</span>
 
@@ -302,20 +321,8 @@ option, which allows you to pass arbitrary arguments to the underlying tool.</p>
 </div>
 <p>Note that this section is divided into two sub-sections: general and
 PDX-specific. The PDX-specific section contains additional options for rules
-that are only used in the PDX workflow (see below)..</p>
+that are only used in the PDX workflow.</p>
 </div>
-</div>
-<div class="section" id="standard-vs-pdx-mode">
-<h2>Standard vs PDX mode<a class="headerlink" href="#standard-vs-pdx-mode" title="Permalink to this headline">¶</a></h2>
-<p>The workflow supports the processing of patient-derived xenograft (PDX) by
-aligning reads to two reference indices (for the graft and host genomes) and
-using disambiguate to separate the graft reads from sequence reads originating
-from the host. For typical PDXs, this means separate human reads (the graft)
-from the mouse reads (the host).</p>
-<p>The workflow is run in ‘PDX’ mode if a host index is supplied for the <code class="docutils literal"><span class="pre">bwa</span></code>
-rule (using the <code class="docutils literal"><span class="pre">index_host</span></code> option). If this option is omitted or left
-empty, the workflow runs in the ‘standard’ mode, in which reads are only
-aligned to a single reference genome.</p>
 </div>
 </div>
 
@@ -363,7 +370,7 @@ aligned to a single reference genome.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.1',
+            VERSION:'0.1.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
