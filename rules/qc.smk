@@ -26,6 +26,8 @@ rule multiqc:
         config["multiqc"]["extra"]
     log:
         "logs/multiqc.log"
+    conda:
+        path.join(workflow.basedir, "envs/multiqc.yaml")
     wrapper:
         "0.17.0/bio/multiqc"
 
