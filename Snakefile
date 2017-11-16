@@ -2,12 +2,12 @@ import pandas as pd
 
 configfile: 'config.yaml'
 
+
 ################################################################################
 # Globals                                                                      #
 ################################################################################
 
 samples = pd.read_csv('samples.tsv', sep='\t')
-is_pdx = bool(config["bwa"]["index_host"])
 
 
 ################################################################################
@@ -42,10 +42,5 @@ rule all:
 
 include: "rules/input.smk"
 include: "rules/fastq.smk"
-
-if is_pdx:
-    include: "rules/alignment_pdx.smk"
-else:
-    include: "rules/alignment.smk"
-
+include: "rules/alignment.smk"
 include: "rules/qc.smk"

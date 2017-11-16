@@ -11,7 +11,7 @@ def multiqc_inputs(wildcards):
                sample=get_samples())
     ]
 
-    if is_pdx:
+    if config["options"]["pdx"]:
         inputs += [expand("qc/disambiguate/{sample}.txt", sample=get_samples())]
 
     return [input_ for sub_inputs in inputs for input_ in sub_inputs]
@@ -26,6 +26,8 @@ rule multiqc:
         config["multiqc"]["extra"]
     log:
         "logs/multiqc.log"
+    conda:
+        path.join(workflow.basedir, "envs/multiqc.yaml")
     wrapper:
         "0.17.0/bio/multiqc"
 

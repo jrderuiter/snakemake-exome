@@ -36,8 +36,23 @@ Pipeline configuration
 ----------------------
 
 The individual steps of the pipeline are configured using the ``config.yaml``
-file. This config file contains two different sections, which define
-configurations for the inputs and for each specific rule, respectively.
+file. This config file contains three different sections, which define
+general pipeline options, options for the inputs and options for each
+specific rule, respectively.
+
+General options
+~~~~~~~~~~~~~~~
+
+The general section defines several options regarding the high-level behavior
+of the pipeline. The section currently defines a single option ``pdx``, which
+determines whether the 'standard' or PDX version of the workflow is run:
+
+.. literalinclude:: ../config.yaml
+    :lines: 1-6
+
+Note that a host index should be supplied for the ``bwa`` rule (using the
+``index_host`` option, see rule options below for more details) when running
+the PDX workflow.
 
 Input options
 ~~~~~~~~~~~~~
@@ -46,7 +61,7 @@ The input section defines several options regarding the handling of the
 input files:
 
 .. literalinclude:: ../config.yaml
-    :lines: 1-11
+    :lines: 9-20
 
 Here, ``dir`` is an optional value that defines the directory containing
 the input files. If given, file paths provided in ``samples.tsv`` are
@@ -67,22 +82,8 @@ each step and the corresponding tool, but each step typically has an ``extra``
 option, which allows you to pass arbitrary arguments to the underlying tool.
 
 .. literalinclude:: ../config.yaml
-    :lines: 15-
+    :lines: 23-
 
 Note that this section is divided into two sub-sections: general and
 PDX-specific. The PDX-specific section contains additional options for rules
-that are only used in the PDX workflow (see below)..
-
-Standard vs PDX mode
---------------------
-
-The workflow supports the processing of patient-derived xenograft (PDX) by
-aligning reads to two reference indices (for the graft and host genomes) and
-using disambiguate to separate the graft reads from sequence reads originating
-from the host. For typical PDXs, this means separate human reads (the graft)
-from the mouse reads (the host).
-
-The workflow is run in 'PDX' mode if a host index is supplied for the ``bwa``
-rule (using the ``index_host`` option). If this option is omitted or left
-empty, the workflow runs in the 'standard' mode, in which reads are only
-aligned to a single-reference genome.
+that are only used in the PDX workflow.

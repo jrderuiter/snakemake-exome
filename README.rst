@@ -1,7 +1,7 @@
 Snakemake-exome
 ===============
 
-|Snakemake| |wercker status|
+|Snakemake| |Wercker| |Zenodo|
 
 Snakemake-exome is a snakemake workflow that generates alignments from exome
 sequencing data (or similar targeted DNA-sequencing data). The workflow is
@@ -9,15 +9,17 @@ designed to handle paired-end (and optionally multi-lane) sequencing data.
 Processing of patient-derived xenograft (PDX) samples is also supported, by
 using disambiguate to separate graft/host sequence reads.
 
-If you use this workflow in a paper, don't forget to give credits
-to the authors by citing the URL of this repository and, if available, its
-DOI (see above).
+If you use this workflow in a paper, don't forget to give credits to the
+authors by citing the URL of this repository and its DOI (see above).
 
 .. |Snakemake| image:: https://img.shields.io/badge/snakemake-≥3.13.3-brightgreen.svg
    :target: https://snakemake.bitbucket.io
 
-.. |wercker status| image:: https://app.wercker.com/status/1a082864b6d5aded29f41c2e44387763/s/master
+.. |Wercker| image:: https://app.wercker.com/status/1a082864b6d5aded29f41c2e44387763/s/master
    :target: https://app.wercker.com/project/byKey/1a082864b6d5aded29f41c2e44387763
+
+.. |Zenodo| image:: https://zenodo.org/badge/94568798.svg
+   :target: https://zenodo.org/badge/latestdoi/94568798
 
 Overview
 --------
@@ -43,7 +45,7 @@ This results in the following dependency graph:
 The PDX workflow is a slightly modified version of the standard workflow, which
 aligns the reads to two reference genome (the host and graft reference genomes)
 and uses disambiguate_ to remove sequences originating from the host organism.
-See the docs for more details.
+See the docs_ for more details.
 
 Documentation
 -------------
