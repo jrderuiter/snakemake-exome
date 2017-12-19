@@ -1,0 +1,67 @@
+{
+    "input": {
+        "dir": "input"
+    },
+    "options": {
+        "readgroup": {
+            "platform": "ILLUMINA",
+            "centre": "CENTRE"
+        },
+        "pdx": true
+    },
+    "references": {
+        "genome": "input/reference.fa",
+        "bwa_index": "/path/to/index",
+        "bwa_index_host": "/path/to/index_host",
+        "capture": "input/capture.bed",
+        "capture_intervals": "input/capture.intervals"
+    },
+    "samples": {
+        "S1": ["S1.L001", "S1.L002"]
+    },
+    "units": {
+        "S1.L001": ["S1.L001.R1.fastq.gz", "S1.L001.R2.fastq.gz"],
+        "S1.L002": ["S1.L002.R1.fastq.gz", "S1.L002.R2.fastq.gz"]
+    },
+    "rules": {
+        "cutadapt": {
+            "extra": [
+                "-a AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC",
+                "-A AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCATT",
+                "-q 20",
+                "--minimum-length 60"],
+            "threads": 5
+        },
+        "bwa": {
+            "extra": ["-M"],
+            "sort_extra": [],
+            "threads": 10
+        },
+        "samtools_merge": {
+            "extra": [],
+            "threads": 10
+        },
+        "picard_mark_duplicates": {
+            "extra": [
+                "-XX:ParallelGCThreads=5",
+                "VALIDATION_STRINGENCY=LENIENT"
+            ]
+        },
+        "picard_collect_hs_metrics": {
+            "extra": "-Xmx4g"
+        },
+        "multiqc": {
+            "extra": []
+        },
+        "fastqc": {
+            "extra": []
+        },
+        "disambiguate": {
+            "extra": []
+        },
+        "sambamba_sort": {
+            "extra": [],
+            "threads": 5
+        }
+    }
+}

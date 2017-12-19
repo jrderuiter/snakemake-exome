@@ -1,63 +1,71 @@
-def bwa_extra(bwa_config):
-    """Returns extra arguments for BWA based on config.
+def bwa_extra(wildcards):
+    """Generates bwa mem extra arguments."""
 
-    Ensures that readgroup information is included in the arguments.
-    """
+    extra = list(config["rules"]["bwa"]["extra"])
 
-    extra_args = bwa_config.get("extra", "")
-    extra_args += " -R " + bwa_config["readgroup"]
+    readgroup_str = ('\"@RG\\tID:{unit}\\tSM:{sample}\\t'
+                     'LB:{sample}\\tPU:{unit}\\t'
+                     'PL:{platform}\\tCN:{centre}\"')
 
-    return extra_args.strip()
+    readgroup_str = readgroup_str.format(
+        sample=get_sample_for_unit(wildcards.unit),
+        unit=wildcards.unit,
+        platform=config["options"]["readgroup"]["platform"],
+        centre=config["options"]["readgroup"]["centre"])
+
+    extra += ['-R ' + readgroup_str]
+
+    return " ".join(extra)
 
 
 if config["options"]["pdx"]:
 
     rule bwa_graft:
         input:
-            ["fastq/trimmed/{sample}.{lane}.R1.fastq.gz",
-             "fastq/trimmed/{sample}.{lane}.R2.fastq.gz"],
+            ["fastq/trimmed/{unit}.R1.fastq.gz",
+             "fastq/trimmed/{unit}.R2.fastq.gz"],
         output:
-            temp("bam/aligned/{sample}.{lane}.graft.bam")
+            temp("bam/aligned/{unit}.graft.bam")
         params:
-            index=config["bwa"]["index"],
-            extra=bwa_extra(config["bwa"]),
+            index=config["references"]["bwa_index"],
+            extra=lambda wc: bwa_extra(wc),
             sort="samtools",
             sort_order="queryname",
-            sort_extra=config["bwa"]["sort_extra"]
+            sort_extra=" ".join(config["rules"]["bwa"]["sort_extra"])
         threads:
-            config["bwa"]["threads"]
+            config["rules"]["bwa"]["threads"]
         log:
-            "logs/bwa/{sample}.{lane}.graft.log"
+            "logs/bwa/{unit}.graft.log"
         wrapper:
             "0.17.0/bio/bwa/mem"
 
 
     rule bwa_host:
         input:
-            ["fastq/trimmed/{sample}.{lane}.R1.fastq.gz",
-             "fastq/trimmed/{sample}.{lane}.R2.fastq.gz"]
+            ["fastq/trimmed/{unit}.R1.fastq.gz",
+             "fastq/trimmed/{unit}.R2.fastq.gz"]
         output:
-            temp("bam/aligned/{sample}.{lane}.host.bam")
+            temp("bam/aligned/{unit}.host.bam")
         params:
-            index=config["bwa"]["index_host"],
-            extra=bwa_extra(config["bwa"]),
+            index=config["references"]["bwa_index_host"],
+            extra=lambda wc: bwa_extra(wc),
             sort="samtools",
             sort_order="queryname",
-            sort_extra=config["bwa"]["sort_extra"]
+            sort_extra=" ".join(config["rules"]["bwa"]["sort_extra"])
         threads:
-            config["bwa"]["threads"]
+            config["rules"]["bwa"]["threads"]
         log:
-            "logs/bwa/{sample}.{lane}.host.log"
+            "logs/bwa/{unit}.host.log"
         wrapper:
             "0.17.0/bio/bwa/mem"
 
 
     def merge_inputs(wildcards):
-        lanes = get_sample_lanes(wildcards.sample)
+        units = get_sample_units(wildcards.sample)
 
-        file_paths = ["bam/aligned/{}.{}.{}.bam"
-                    .format(wildcards.sample, lane, wildcards.organism)
-                    for lane in lanes]
+        file_paths = ["bam/aligned/{}.{}.bam"
+                      .format(unit, wildcards.organism)
+                      for unit in units]
 
         return file_paths
 
@@ -68,9 +76,9 @@ if config["options"]["pdx"]:
         output:
             temp("bam/merged/{sample}.{organism}.bam")
         params:
-            config["samtools_merge"]["extra"] + " -n"
+            " ".join(config["rules"]["samtools_merge"]["extra"] + ["-n"])
         threads:
-            config["samtools_merge"]["threads"]
+            config["rules"]["samtools_merge"]["threads"]
         wrapper:
             "0.17.0/bio/samtools/merge"
 
@@ -88,7 +96,7 @@ if config["options"]["pdx"]:
         params:
             algorithm="bwa",
             prefix="{sample}",
-            extra=config["disambiguate"]["extra"]
+            extra=" ".join(config["rules"]["disambiguate"]["extra"])
         wrapper:
             "0.17.0/bio/ngs-disambiguate"
 
@@ -99,9 +107,9 @@ if config["options"]["pdx"]:
         output:
             "bam/sorted/{sample}.bam"
         params:
-            config["sambamba_sort"]["extra"]
+            " ".join(config["rules"]["sambamba_sort"]["extra"])
         threads:
-            config["sambamba_sort"]["threads"]
+            config["rules"]["sambamba_sort"]["threads"]
         wrapper:
             "0.17.0/bio/sambamba/sort"
 
@@ -109,26 +117,26 @@ else:
 
     rule bwa:
         input:
-            ["fastq/trimmed/{sample}.{lane}.R1.fastq.gz",
-             "fastq/trimmed/{sample}.{lane}.R2.fastq.gz"],
+            ["fastq/trimmed/{unit}.R1.fastq.gz",
+             "fastq/trimmed/{unit}.R2.fastq.gz"],
         output:
-            temp("bam/aligned/{sample}.{lane}.bam")
+            temp("bam/aligned/{unit}.bam")
         params:
-            index=config["bwa"]["index"],
-            extra=bwa_extra(config["bwa"]),
+            index=config["references"]["bwa_index"],
+            extra=lambda wc: bwa_extra(wc),
             sort="samtools",
             sort_order="coordinate",
-            sort_extra=config["bwa"]["sort_extra"]
+            sort_extra=" ".join(config["rules"]["bwa"]["sort_extra"])
         threads:
             config["bwa"]["threads"]
         log:
-            "logs/bwa/{sample}.{lane}.log"
+            "logs/bwa/{unit}.log"
         wrapper:
             "0.17.0/bio/bwa/mem"
 
 
     def merge_inputs(wildcards):
-        lanes = get_sample_lanes(wildcards.sample)
+        lanes = get_sample_units(wildcards.sample)
 
         file_paths = ["bam/aligned/{}.{}.bam".format(
                         wildcards.sample, lane)
@@ -143,9 +151,9 @@ else:
         output:
             temp("bam/merged/{sample}.bam")
         params:
-            config["samtools_merge"]["extra"]
+            config["rules"]["samtools_merge"]["extra"]
         threads:
-            config["samtools_merge"]["threads"]
+            config["rules"]["samtools_merge"]["threads"]
         wrapper:
             "0.17.0/bio/samtools/merge"
 
@@ -168,7 +176,7 @@ rule picard_mark_duplicates:
         bam="bam/final/{sample}.bam",
         metrics="qc/picard_mark_duplicates/{sample}.metrics"
     params:
-        config["picard_mark_duplicates"]["extra"]
+        config["rules"]["picard_mark_duplicates"]["extra"]
     log:
         "logs/picard_mark_duplicates/{sample}.log"
     wrapper:

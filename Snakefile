@@ -1,13 +1,12 @@
 import pandas as pd
 
-configfile: 'config.yaml'
+if not config:
+    raise ValueError("A config file must be provided using --configfile")
 
+def _invert_dict(d):
+    return dict( (v,k) for k in d for v in d[k] )
 
-################################################################################
-# Globals                                                                      #
-################################################################################
-
-samples = pd.read_csv('samples.tsv', sep='\t')
+_unit_sample_lookup = _invert_dict(config['samples'])
 
 
 ################################################################################
@@ -16,18 +15,19 @@ samples = pd.read_csv('samples.tsv', sep='\t')
 
 def get_samples():
     """Returns list of samples."""
-    return list(samples['sample'].unique())
+    return list(config["samples"].keys())
 
-
-def get_samples_with_lane():
+def get_units():
     """Returns list of sample/lane identifiers."""
-    return list((samples['sample'] + '.' + samples['lane']).unique())
+    return list(config["units"].keys())
 
+def get_sample_units(sample):
+    """Returns available units for given sample."""
+    return config["samples"][sample]
 
-def get_sample_lanes(sample):
-    """Returns available lanes for given sample."""
-    subset = samples.loc[samples['sample'] == sample]
-    return list(subset['lane'].unique())
+def get_sample_for_unit(unit):
+    """Returns sample for given unit."""
+    return _unit_sample_lookup[unit]
 
 
 ################################################################################

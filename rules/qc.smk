@@ -1,9 +1,9 @@
 def multiqc_inputs(wildcards):
     inputs = [
-        expand("qc/fastqc/{sample_lane}.{pair}_fastqc.html",
-               sample_lane=get_samples_with_lane(), pair=["R1", "R2"]),
-        expand("qc/cutadapt/{sample_lane}.txt",
-               sample_lane=get_samples_with_lane()),
+        expand("qc/fastqc/{unit}.{pair}_fastqc.html",
+               unit=get_units(), pair=["R1", "R2"]),
+        expand("qc/cutadapt/{unit}.txt",
+               unit=get_units()),
         expand("qc/samtools_stats/{sample}.txt", sample=get_samples()),
         expand("qc/picard_collect_hs_metrics/{sample}.txt",
                sample=get_samples()),
@@ -23,7 +23,7 @@ rule multiqc:
     output:
         "qc/multiqc_report.html"
     params:
-        config["multiqc"]["extra"]
+        " ".join(config["rules"]["multiqc"]["extra"])
     log:
         "logs/multiqc.log"
     conda:
@@ -39,7 +39,7 @@ rule fastqc:
         html="qc/fastqc/{sample}.{lane}.{pair}_fastqc.html",
         zip="qc/fastqc/{sample}.{lane}.{pair}_fastqc.zip"
     params:
-        config["fastqc"]["extra"]
+        " ".join(config["rules"]["fastqc"]["extra"])
     wrapper:
         "0.17.0/bio/fastqc"
 
@@ -56,15 +56,15 @@ rule samtools_stats:
 rule picard_collect_hs_metrics:
     input:
         bam="bam/final/{sample}.bam",
-        reference=config["picard_collect_hs_metrics"]["reference"],
+        reference=config["references"]["genome"],
         # Baits and targets should be given as interval lists. These can
         # can be generated from bed files using picard BedToIntervalList.
-        bait_intervals=config["picard_collect_hs_metrics"]["bait_intervals"],
-        target_intervals=config["picard_collect_hs_metrics"]["target_intervals"]
+        bait_intervals=config["references"]["capture_intervals"],
+        target_intervals=config["references"]["capture_intervals"]
     output:
         "qc/picard_collect_hs_metrics/{sample}.txt"
     params:
-        extra=config["picard_collect_hs_metrics"]["extra"]
+        extra=config["rules"]["picard_collect_hs_metrics"]["extra"]
     log:
         "logs/picard_collect_hs_metrics/{sample}.log"
     wrapper:

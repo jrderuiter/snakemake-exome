@@ -7,7 +7,7 @@ rule cutadapt:
         fastq2=temp("fastq/trimmed/{sample}.{lane}.R2.fastq.gz"),
         qc="qc/cutadapt/{sample}.{lane}.txt"
     params:
-        config["cutadapt"]["extra"]
+        " ".join(config["rules"]["cutadapt"]["extra"])
     log:
         "logs/cutadapt/{sample}.{lane}.log"
     wrapper:
