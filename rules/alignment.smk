@@ -128,7 +128,7 @@ else:
             sort_order="coordinate",
             sort_extra=" ".join(config["rules"]["bwa"]["sort_extra"])
         threads:
-            config["bwa"]["threads"]
+            config["rules"]["bwa"]["threads"]
         log:
             "logs/bwa/{unit}.log"
         wrapper:
@@ -136,13 +136,8 @@ else:
 
 
     def merge_inputs(wildcards):
-        lanes = get_sample_units(wildcards.sample)
-
-        file_paths = ["bam/aligned/{}.{}.bam".format(
-                        wildcards.sample, lane)
-                    for lane in lanes]
-
-        return file_paths
+        units = get_sample_units(wildcards.sample)
+        return ["bam/aligned/{}.bam".format(unit) for unit in units]
 
 
     rule samtools_merge:
